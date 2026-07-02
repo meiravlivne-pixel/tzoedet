@@ -82,8 +82,8 @@ button:active {
 
     <h3>סיום הליכה</h3>
 
-    <label>דקות הליכה</label>
-    <input type="number" id="minutes" style="width:100%; padding:10px; border-radius:10px; border:1px solid #ccc;">
+    <label>זמן הליכה</label>
+    <input type="number" id="minutes" maxlength="3" style="width: 80px padding:10px border-radius:10px border:1px solid #ccc;">
 
     <p>מאמץ</p>
     <div class="row" id="effort">
@@ -98,8 +98,7 @@ button:active {
         <div class="choice" onclick="select('pain',0)">😀 אין</div>
         <div class="choice" onclick="select('pain',1)">🙂 קל</div>
         <div class="choice" onclick="select('pain',2)">😐 מורגש</div>
-        <div class="choice" onclick="select('pain',3)">🙁 מציק</div>
-        <div class="choice" onclick="select('pain',4)">😣 חזק</div>
+        <div class="choice" onclick="select('pain',3)">🙁 כואב</div>
     </div>
 
     <br>
