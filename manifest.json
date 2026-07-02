@@ -1,0 +1,10 @@
+{
+  "name": "צועדת",
+  "short_name": "צועדת",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4CAF50",
+  "direction": "rtl",
+  "lang": "he"
+}
