@@ -167,7 +167,6 @@ function render() {
 }
 
 render();
-</script>
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
@@ -176,6 +175,8 @@ if ("serviceWorker" in navigator) {
       .catch(err => console.log("SW error:", err));
   });
 }
+    
+</script>
 
 </body>
 </html>
