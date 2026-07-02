@@ -1,41 +1,43 @@
 <!doctype html><html lang="he" dir="rtl"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>צועדת</title><link rel="stylesheet" href="style.css"></head>
-<body>
+<title>צועדת</title>
+<link rel="stylesheet" href="style.css">
+</head><body>
 <header class="hero">
-<h1>🚶‍♀️ צועדת</h1>
+<div class="logo">👣</div>
+<h1>צועדת</h1>
 <p>שלום, מירב 🌼</p>
 </header>
 
-<section class="card status green">
+<section class="card status">
 <h2>🟢 מצב הרגליים</h2>
 <p id="recommendation">אפשר להמשיך בתוכנית.</p>
 </section>
 
 <section class="card">
-<h2>היום בתוכנית</h2>
-<p id="plan">הליכה של 10 דקות בקצב נינוח</p>
+<h2>היום</h2>
+<p>הליכה 10 דקות בקצב נינוח</p>
 <button id="startBtn">התחילי הליכה</button>
 </section>
 
-<section id="walkCard" class="card hidden">
-<label>זמן הליכה (דקות)</label>
-<input id="minutes" type="number" min="1" max="999">
-<h3>מאמץ</h3><div id="effort"></div>
-<h3>כאב</h3><div id="pain"></div>
+<section id="walkForm" class="hidden card">
+<input id="minutes" type="number" placeholder="דקות">
+<div id="effort"></div>
+<div id="pain"></div>
 <button id="saveBtn">שמירה</button>
 </section>
 
 <section class="card">
-<h2>השבוע</h2>
-<div id="weekSummary"></div>
+<h2>יומן</h2>
+<div id="list"></div>
 </section>
 
-<section class="card">
-<h2>ציר זמן</h2>
-<div id="timeline"></div>
-</section>
+<div id="dialog" class="hidden dialog">
+<div class="dialogBox">
+<p>למחוק הליכה?</p>
+<button id="confirmDelete">מחק</button>
+<button id="cancelDelete">ביטול</button>
+</div></div>
 
-<nav><span>🏠</span><span>📖</span><span>📈</span><span>⚙️</span></nav>
 <script src="script.js"></script>
 </body></html>

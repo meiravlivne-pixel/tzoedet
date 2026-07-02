@@ -1,6 +1,4 @@
-# v0.5
-- כרטיס מצב הרגליים
-- המלצה אוטומטית ראשונית
-- ציר זמן
-- סיכום שבועי
-- בסיס לרמזור
+# v0.6
+- Added edit/delete architecture
+- Fixed navigation structure
+- Prepared recommendation engine
