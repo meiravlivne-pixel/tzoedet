@@ -6,7 +6,7 @@
     --card-bg: #ffffff;
     --text-main: #333333;
     --text-muted: #777777;
-    --status-green: #d4638a; /* מותאם לגוון הוורוד-אדמדם של כפתור הוי במוקאפ */
+    --status-green: #d4638a;
 }
 
 body {
@@ -33,7 +33,6 @@ body {
     display: none !important;
 }
 
-/* כפתורים ורכיבים כלליים */
 button {
     font-family: inherit;
     cursor: pointer;
@@ -50,39 +49,26 @@ button {
     border: 1px solid rgba(112, 66, 125, 0.05);
 }
 
-/* מסך הבית */
+/* מסך הבית - ללא כפתור הגדרות */
 .app-header {
     text-align: center;
     position: relative;
-    margin-bottom: 15px;
+    margin-bottom: 25px;
+    margin-top: 15px;
 }
 
 .logo-container {
     display: flex;
     justify-content: center;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .app-header h1 {
     color: var(--primary-purple);
-    font-size: 26px;
+    font-size: 32px;
     margin: 5px 0;
     font-weight: 800;
-}
-
-.subtitle {
-    color: var(--primary-purple);
-    font-size: 14px;
-    margin: 0;
-}
-
-.icon-btn {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background: transparent;
-    font-size: 20px;
-    color: var(--primary-purple);
+    letter-spacing: 0.5px;
 }
 
 /* כרטיס סטטוס רמזור */
@@ -111,7 +97,7 @@ button {
     box-shadow: 0 6px 12px rgba(212, 99, 138, 0.3);
 }
 
-.green-status { background-color: #d4638a; } /* מסמל וי / אישור המשך במוקאפ */
+.green-status { background-color: #d4638a; }
 .yellow-status { background-color: #f39c12; }
 .red-status { background-color: #e74c3c; }
 
@@ -181,11 +167,6 @@ button {
     width: 100%;
     box-shadow: 0 6px 12px rgba(201, 74, 127, 0.2);
     margin-top: 10px;
-    transition: background 0.2s;
-}
-
-.main-btn:active {
-    background-color: #b03d6d;
 }
 
 .secondary-link-btn {
@@ -206,7 +187,7 @@ footer {
     opacity: 0.7;
 }
 
-/* מסכי פנים (יומן וטופס) */
+/* כותרות מסכים פנימיים */
 .screen-header {
     display: flex;
     align-items: center;
@@ -269,15 +250,7 @@ footer {
     padding: 4px;
 }
 
-.log-footer {
-    text-align: center;
-    margin-top: auto;
-    padding-top: 20px;
-    color: var(--primary-purple);
-    font-size: 13px;
-}
-
-/* טופס עריכה והזנה */
+/* טופס */
 .form-body {
     display: flex;
     flex-direction: column;
@@ -314,10 +287,8 @@ footer {
     box-sizing: border-box;
     font-size: 15px;
     font-family: inherit;
-    color: #333;
 }
 
-/* רכיב בחירת דקות פלוס מינוס */
 .numeric-stepper {
     display: flex;
     align-items: center;
@@ -341,20 +312,13 @@ footer {
     font-size: 16px;
     font-weight: bold;
     color: var(--primary-purple);
-    -moz-appearance: textfield;
 }
 
-.numeric-stepper input::-webkit-outer-spin-button,
-.numeric-stepper input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-/* בורר אימוג'י למאמץ */
+/* בורר אימוג'ים מרובע (עבור מאמץ וכאב) */
 .emoji-selector {
     display: flex;
     justify-content: space-around;
-    gap: 10px;
+    gap: 8px;
     margin-top: 5px;
 }
 
@@ -362,12 +326,12 @@ footer {
     flex: 1;
     border: 1px solid #eee;
     border-radius: 12px;
-    padding: 10px 5px;
+    padding: 10px 4px;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
     background: #fafafa;
 }
 
@@ -376,7 +340,7 @@ footer {
 }
 
 .emoji-option .text {
-    font-size: 12px;
+    font-size: 11px;
     color: #666;
 }
 
@@ -384,33 +348,6 @@ footer {
     border-color: var(--accent-pink);
     background-color: #fff0f5;
     box-shadow: 0 0 0 1px var(--accent-pink);
-}
-
-/* בורר סקאלת כאב 0-10 */
-.scale-selector {
-    display: flex;
-    justify-content: space-between;
-    overflow-x: auto;
-    padding: 5px 0;
-    gap: 4px;
-}
-
-.scale-num {
-    min-width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: #f0f0f0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    font-weight: 600;
-    color: #555;
-}
-
-.scale-num.selected {
-    background-color: var(--primary-purple);
-    color: white;
 }
 
 .save-btn {
@@ -452,7 +389,6 @@ footer {
     width: 100%;
     max-width: 280px;
     text-align: center;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
 
 .delete-icon {
@@ -463,15 +399,13 @@ footer {
 
 .dialogBox h3 {
     margin: 0 0 8px 0;
-    color: #222;
     font-size: 18px;
 }
 
 #deleteDialogDetails {
     font-size: 14px;
     color: #666;
-    line-height: 1.5;
-    margin: 0 0 20px 0;
+    margin-bottom: 20px;
 }
 
 .dialog-actions {
