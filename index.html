@@ -1,20 +1,150 @@
-<!-- דיאלוג מחיקה מודאלי -->
-    <div id="dialog" class="hidden dialog">
-        ... (הקוד הקיים שלך) ...
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>צועדת</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+
+    <!-- מסך הבית -->
+    <div id="homeScreen" class="screen">
+        <header class="app-header">
+            <div class="logo-container">
+                <!-- לוגו SVG משופר לפי image_ddf801.png -->
+                <svg class="app-logo" viewBox="0 0 200 200" width="120" height="120">
+                    <defs>
+                        <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#d5a6bd" />
+                            <stop offset="100%" stop-color="#70427d" />
+                        </linearGradient>
+                    </defs>
+                    <!-- העיגול המקיף הפתוח מעט בסוף -->
+                    <path d="M 40,150 A 75,75 0 1,1 165,130" fill="none" stroke="url(#purpleGrad)" stroke-width="4" stroke-linecap="round"/>
+                    
+                    <!-- הגבעה והשביל המתעקל בתחתית -->
+                    <path d="M 40,150 Q 90,120 160,135 L 160,165 Q 90,165 40,150 Z" fill="#b68cb8" opacity="0.6"/>
+                    <path d="M 50,151 Q 100,125 155,134" fill="none" stroke="#ffffff" stroke-width="4"/>
+                    <path d="M 75,147 Q 110,135 145,140" fill="none" stroke="#70427d" stroke-width="2"/>
+                    
+                    <!-- הענף עם שלושת העלים בצד ימין -->
+                    <path d="M 145,140 Q 155,115 160,100" fill="none" stroke="#70427d" stroke-width="3" stroke-linecap="round"/>
+                    <!-- עלה עליון -->
+                    <path d="M 160,100 Q 170,90 162,82 Q 152,90 160,100 Z" fill="#70427d"/>
+                    <!-- עלה שמאלי -->
+                    <path d="M 152,118 Q 138,112 138,122 Q 145,126 152,118 Z" fill="#70427d"/>
+                    <!-- עלה ימני -->
+                    <path d="M 156,110 Q 170,108 170,118 Q 160,120 156,110 Z" fill="#70427d"/>
+
+                    <!-- כף הרגל המרכזית -->
+                    <!-- העקב והחלק המרכזי -->
+                    <path d="M 95,135 C 80,135 75,110 85,95 C 92,82 112,70 115,85 C 118,100 110,135 95,135 Z" fill="url(#purpleGrad)"/>
+                    <!-- אצבע גדולה -->
+                    <circle cx="118" cy="67" r="10" fill="url(#purpleGrad)"/>
+                    <!-- אצבע שנייה -->
+                    <circle cx="102" cy="65" r="7.5" fill="url(#purpleGrad)"/>
+                    <!-- אצבע שלישית -->
+                    <circle cx="90" cy="70" r="6.5" fill="url(#purpleGrad)"/>
+                    <!-- אצבע רביעית -->
+                    <circle cx="80" cy="78" r="5.5" fill="url(#purpleGrad)"/>
+                </svg>
+            </div>
+            <h1>צועדת</h1>
+        </header>
+
+        <!-- רמזור מצב הרגליים -->
+        <section class="card status-card">
+            <h2>מצב הרגליים</h2>
+            <div id="trafficLightCircle" class="status-circle green-status">✓</div>
+            <h3 id="statusTitle">אפשר להמשיך</h3>
+            <p id="recommendationText">אין החמרה בשלוש ההליכות האחרונות. אפשר להמשיך להתקדם.</p>
+        </section>
+
+        <!-- מה עושים היום -->
+        <section class="card todo-card">
+            <h2>מה עושים היום?</h2>
+            <div class="todo-content">
+                <div class="walk-icon-bg">🚶‍♀️</div>
+                <div>
+                    <span class="activity-type">הליכה</span>
+                    <div class="target-minutes"><span id="recommendedMinutes">10</span> דקות</div>
+                    <span class="sub-target">בהתאם לתוכנית שלך</span>
+                </div>
+            </div>
+        </section>
+
+        <button id="startBtn" class="main-btn">🚶‍♀️ התחילי הליכה</button>
+        <button id="viewLogBtn" class="secondary-link-btn">📋 לצפייה ביומן ההליכות</button>
+
+        <footer>
+            <p>צועדת בקצב שלך, צועדת קדימה 🍃</p>
+        </footer>
     </div>
 
-    <!-- דיאלוג חדש: מדד כאב בוקר יומיומי -->
-    <div id="morningDialog" class="hidden dialog">
-        <div class="dialogBox" style="max-width: 320px;">
-            <div style="font-size: 30px; margin-bottom: 10px;">🌅</div>
-            <h3>בוקר טוב! מה מצב הרגליים?</h3>
-            <p style="font-size: 14px; color: #666; margin-bottom: 15px;">אנא דירגי את רמת הכאב שלך הבוקר:</p>
-            <div id="morningPainContainer" class="emoji-selector" style="margin-bottom: 20px;">
-                <!-- ייטען דינמית ב-JS -->
+    <!-- מסך יומן הליכות -->
+    <div id="logScreen" class="screen hidden">
+        <header class="screen-header">
+            <button id="backFromLogBtn" class="back-btn">➔</button>
+            <h2>יומן הליכות</h2>
+        </header>
+        
+        <div id="list" class="log-list"></div>
+    </div>
+
+    <!-- מסך הזנה / עריכת הליכה -->
+    <div id="formScreen" class="screen hidden">
+        <header class="screen-header">
+            <button id="backFromFormBtn" class="back-btn">➔</button>
+            <h2 id="formTitle">הוספת הליכה</h2>
+        </header>
+
+        <section class="form-body">
+            <!-- בחירת תאריך -->
+            <div class="form-group">
+                <div class="date-picker-container">
+                    <input id="walkDate" type="date">
+                </div>
             </div>
+
+            <!-- זמן הליכה -->
+            <div class="form-group row-align">
+                <span class="label">🕒 זמן הליכה</span>
+                <div class="numeric-stepper">
+                    <button type="button" id="minusMin">-</button>
+                    <input id="minutes" type="number" value="10" min="1" readonly>
+                    <button type="button" id="plusMin">+</button>
+                </div>
+                <span class="unit">דקות</span>
+            </div>
+
+            <!-- מאמץ -->
+            <div class="form-group">
+                <span class="label">💪 מאמץ</span>
+                <div id="effortContainer" class="emoji-selector"></div>
+            </div>
+
+            <!-- כאב (עודכן ל-4 אימוג'ים לפי הדרישה) -->
+            <div class="form-group">
+                <span class="label">⚡ כאב במהלך ההליכה</span>
+                <div id="painContainer" class="emoji-selector"></div>
+            </div>
+
+            <button id="saveBtn" class="save-btn">שמירת שינויים</button>
+            <button id="deleteBtnForm" class="delete-link-btn hidden">מחק הליכה</button>
+        </section>
+    </div>
+
+    <!-- דיאלוג מחיקה מודאלי -->
+    <div id="dialog" class="hidden dialog">
+        <div class="dialogBox">
+            <div class="delete-icon">🗑️</div>
+            <h3>למחוק את ההליכה?</h3>
+            <p id="deleteDialogDetails"></p>
             <div class="dialog-actions">
-                <button id="saveMorningPainBtn" class="btn-confirm-delete" style="background-color: var(--primary-purple);">שמירה</button>
-                <button id="skipMorningPainBtn" class="btn-cancel-delete">דילוג</button>
+                <button id="confirmDelete" class="btn-confirm-delete">מחק</button>
+                <button id="cancelDelete" class="btn-cancel-delete">ביטול</button>
             </div>
         </div>
     </div>
