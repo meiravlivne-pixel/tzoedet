@@ -1,4 +1,4 @@
-// מערכי נתונים לאפיון
+// מערכי הנתונים המעודכנים לאפיון
 const efforts = [
     { icon: '😊', text: 'קל' },
     { icon: '😐', text: 'בינוני' },
@@ -6,18 +6,25 @@ const efforts = [
     { icon: '🥵', text: 'קשה מאוד' }
 ];
 
+// סולם כאב חדש מבוסס על 4 אימוג'ים לפי בקשתך
+const pains = [
+    { icon: '🟢', text: 'ללא כאב' },
+    { icon: '🟡', text: 'כאב קל' },
+    { icon: '🟠', text: 'כאב מציק' },
+    { icon: '🔴', text: 'כאב חזק' }
+];
+
 let state = { effort: null, pain: null };
 let editIndex = null;
 let deleteIndex = null;
 let walks = JSON.parse(localStorage.getItem('walks') || '[]');
 
-// ניווט בין מסכים
 function showScreen(screenId) {
     document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
     document.getElementById(screenId).classList.remove('hidden');
 }
 
-// אתחול בוררי טופס
+// בניית בוררי אימוג'י דינמיים
 function initFormComponents() {
     // בורר מאמץ
     const effortContainer = document.getElementById('effortContainer');
@@ -35,21 +42,21 @@ function initFormComponents() {
         effortContainer.appendChild(btn);
     });
 
-    // בורר סקאלת כאב 0-10
+    // בורר כאב (4 אימוג'ים מעודכנים)
     const painContainer = document.getElementById('painContainer');
     painContainer.innerHTML = '';
-    for (let i = 0; i <= 10; i++) {
-        const numBtn = document.createElement('button');
-        numBtn.type = 'button';
-        numBtn.className = 'scale-num';
-        numBtn.textContent = i;
-        numBtn.onclick = () => {
-            state.pain = i;
-            document.querySelectorAll('#painContainer .scale-num').forEach(c => c.classList.remove('selected'));
-            numBtn.classList.add('selected');
+    pains.forEach((p, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'emoji-option';
+        btn.innerHTML = `<span class="icon">${p.icon}</span><span class="text">${p.text}</span>`;
+        btn.onclick = () => {
+            state.pain = idx;
+            document.querySelectorAll('#painContainer .emoji-option').forEach(c => c.classList.remove('selected'));
+            btn.classList.add('selected');
         };
-        painContainer.appendChild(numBtn);
-    }
+        painContainer.appendChild(btn);
+    });
 }
 
 // ניהול רכיב דקות (Stepper)
@@ -63,16 +70,15 @@ document.getElementById('plusMin').onclick = () => {
     input.value = parseInt(input.value) + 1;
 };
 
-// ניקוי טופס
 function clearForm() {
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('walkDate').value = today;
     document.getElementById('minutes').value = '10';
     state = { effort: null, pain: null };
-    document.querySelectorAll('.emoji-option, .scale-num').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('.emoji-option').forEach(c => c.classList.remove('selected'));
 }
 
-// אירועי ניווט וכפתורים
+// ניווט
 document.getElementById('startBtn').onclick = () => {
     editIndex = null;
     clearForm();
@@ -89,7 +95,7 @@ document.getElementById('viewLogBtn').onclick = () => {
 document.getElementById('backFromLogBtn').onclick = () => showScreen('homeScreen');
 document.getElementById('backFromFormBtn').onclick = () => showScreen('homeScreen');
 
-// שמירת נתונים
+// שמירה
 document.getElementById('saveBtn').onclick = () => {
     const mins = parseInt(document.getElementById('minutes').value);
     const rawDate = document.getElementById('walkDate').value;
@@ -103,7 +109,7 @@ document.getElementById('saveBtn').onclick = () => {
         date: rawDate,
         minutes: mins,
         effort: state.effort,
-        pain: state.pain
+        pain: state.pain // כעת שומר אינדקס 0-3
     };
 
     if (editIndex === null) {
@@ -112,15 +118,13 @@ document.getElementById('saveBtn').onclick = () => {
         walks[editIndex] = walkItem;
     }
 
-    // מיון לפי תאריך יורד
     walks.sort((a, b) => new Date(b.date) - new Date(a.date));
-
     localStorage.setItem('walks', JSON.stringify(walks));
     updateBrainAndUI();
     showScreen('homeScreen');
 };
 
-// טעינת פריט לעריכה
+// טעינה לעריכה
 window.editWalk = (idx) => {
     editIndex = idx;
     const w = walks[idx];
@@ -136,26 +140,20 @@ window.editWalk = (idx) => {
     const effortOptions = document.querySelectorAll('#effortContainer .emoji-option');
     if(effortOptions[w.effort]) effortOptions[w.effort].classList.add('selected');
     
-    const painOptions = document.querySelectorAll('#painContainer .scale-num');
+    const painOptions = document.querySelectorAll('#painContainer .emoji-option');
     if(painOptions[w.pain]) painOptions[w.pain].classList.add('selected');
     
     document.getElementById('deleteBtnForm').classList.remove('hidden');
     showScreen('formScreen');
 };
 
-// מחיקה מתוך הטופס
 document.getElementById('deleteBtnForm').onclick = () => {
-    if (editIndex !== null) {
-        askDelete(editIndex);
-    }
+    if (editIndex !== null) askDelete(editIndex);
 };
 
-// ניהול מודאל מחיקה
 window.askDelete = (idx) => {
     deleteIndex = idx;
     const w = walks[idx];
-    
-    // פורמט תאריך עברי קל
     const dateObj = new Date(w.date);
     const formattedDate = !isNaN(dateObj) ? `${dateObj.getDate()}/${dateObj.getMonth()+1}/${dateObj.getFullYear()}` : w.date;
 
@@ -180,7 +178,6 @@ document.getElementById('cancelDelete').onclick = () => {
     document.getElementById('dialog').classList.add('hidden');
 };
 
-// רינדור רשימת יומן
 function renderLog() {
     const listContainer = document.getElementById('list');
     listContainer.innerHTML = '';
@@ -204,19 +201,18 @@ function renderLog() {
                 <button class="action-btn" onclick="editWalk(${idx})">✏️</button>
                 <button class="action-btn" onclick="askDelete(${idx})">🗑️</button>
             </div>
-         topic`;
+        `;
         listContainer.appendChild(item);
     });
 }
 
-// המוח של צועדת - מנוע המלצות
+// מנוע המלצות המותאם לאינדקס הכאב החדש (0 עד 3)
 function updateBrainAndUI() {
     const circle = document.getElementById('trafficLightCircle');
     const title = document.getElementById('statusTitle');
     const desc = document.getElementById('recommendationText');
     const recommendedMinutesInput = document.getElementById('recommendedMinutes');
 
-    // ברירת מחדל להתחלה
     let baseTime = 10;
     recommendedMinutesInput.textContent = baseTime;
 
@@ -228,38 +224,34 @@ function updateBrainAndUI() {
         return;
     }
 
-    // ניתוח 3 ההליכות האחרונות
     const lastThree = walks.slice(0, 3);
-    let totalPain = 0;
     let maxPain = 0;
     let highEffortCount = 0;
 
     lastThree.forEach(w => {
-        totalPain += w.pain;
         if (w.pain > maxPain) maxPain = w.pain;
-        if (w.effort >= 2) highEffortCount++; // קשה או קשה מאוד
+        if (w.effort >= 2) highEffortCount++;
     });
 
-    const avgPain = totalPain / lastThree.length;
     const latestWalk = lastThree[0];
 
-    // לוגיקת הרמזור וההמלצות
-    if (maxPain >= 6 || latestWalk.pain >= 5) {
-        // אדום - להפחית עומס או לנוח
+    // לוגיקה לפי סולם 0-3 (0:ללא, 1:קל, 2:מציק, 3:חזק)
+    if (maxPain === 3 || latestWalk.pain >= 2) {
+        // אדום - כאב מציק או חזק
         circle.className = 'status-circle red-status';
         circle.textContent = '⚠';
         title.textContent = 'להפחית עומס / לנוח';
         desc.textContent = 'נראה שיש עלייה ברמת הכאב. מומלץ לקחת יום מנוחה או להפחית משמעותית את זמן ההליכה.';
         recommendedMinutesInput.textContent = Math.max(5, Math.round(latestWalk.minutes * 0.7));
-    } else if (maxPain >= 3 || highEffortCount >= 2) {
-        // צהוב - להישאר באותו עומס
+    } else if (maxPain === 1 || highEffortCount >= 2) {
+        // צהוב - כאב קל או מאמץ גבוה
         circle.className = 'status-circle yellow-status';
         circle.textContent = '●';
         title.textContent = 'להישאר באותו עומס';
         desc.textContent = 'הגוף מתרגל לעומס הנוכחי. מומלץ להישאר באותו זמן הליכה בימים הקרובים.';
         recommendedMinutesInput.textContent = latestWalk.minutes;
     } else {
-        // ירוק - אפשר להתקדם
+        // ירוק - ללא כאב ומאמץ תקין
         circle.className = 'status-circle green-status';
         circle.textContent = '✓';
         title.textContent = 'אפשר להמשיך';
@@ -268,7 +260,6 @@ function updateBrainAndUI() {
     }
 }
 
-// אתחול האפליקציה בטעינה
 window.onload = () => {
     initFormComponents();
     updateBrainAndUI();
