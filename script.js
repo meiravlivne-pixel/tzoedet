@@ -1,4 +1,4 @@
-// מערכי הנתונים לאפיון
+// מערכי הנתונים המעודכנים לאפיון
 const efforts = [
     { icon: '😊', text: 'קל' },
     { icon: '😐', text: 'בינוני' },
@@ -6,7 +6,7 @@ const efforts = [
     { icon: '🥵', text: 'קשה מאוד' }
 ];
 
-// סולם כאב מבוסס על 4 אימוג'ים (0: ללא כאב, 1: קל, 2: מציק, 3: חזק)
+// סולם כאב חדש מבוסס על 4 אימוג'ים לפי בקשתך
 const pains = [
     { icon: '🟢', text: 'ללא כאב' },
     { icon: '🟡', text: 'כאב קל' },
@@ -42,7 +42,7 @@ function initFormComponents() {
         effortContainer.appendChild(btn);
     });
 
-    // בורר כאב
+    // בורר כאב (4 אימוג'ים מעודכנים)
     const painContainer = document.getElementById('painContainer');
     painContainer.innerHTML = '';
     pains.forEach((p, idx) => {
@@ -109,7 +109,7 @@ document.getElementById('saveBtn').onclick = () => {
         date: rawDate,
         minutes: mins,
         effort: state.effort,
-        pain: state.pain
+        pain: state.pain // כעת שומר אינדקס 0-3
     };
 
     if (editIndex === null) {
@@ -118,6 +118,7 @@ document.getElementById('saveBtn').onclick = () => {
         walks[editIndex] = walkItem;
     }
 
+    walks.sort((a, b) => new Date(b.date) - new Date(a.date));
     localStorage.setItem('walks', JSON.stringify(walks));
     updateBrainAndUI();
     showScreen('homeScreen');
@@ -186,12 +187,7 @@ function renderLog() {
         return;
     }
 
-    // יצירת עותק ממוין לרינדור בלבד כדי לא להרוס את אינדקס המערך המקורי
-    const sortedWalks = walks
-        .map((w, index) => ({ ...w, originalIndex: index }))
-        .sort((a, b) => new Date(b.date) - new Date(a.date));
-
-    sortedWalks.forEach((w) => {
+    walks.forEach((w, idx) => {
         const item = document.createElement('div');
         item.className = 'log-item';
         
@@ -202,15 +198,15 @@ function renderLog() {
             <div class="log-date">${displayDate}</div>
             <div class="log-duration">${w.minutes} דקות</div>
             <div class="log-actions">
-                <button class="action-btn" onclick="editWalk(${w.originalIndex})">✏️</button>
-                <button class="action-btn" onclick="askDelete(${w.originalIndex})">🗑️</button>
+                <button class="action-btn" onclick="editWalk(${idx})">✏️</button>
+                <button class="action-btn" onclick="askDelete(${idx})">🗑️</button>
             </div>
         `;
         listContainer.appendChild(item);
     });
 }
 
-// מנוע המלצות מתוקן ויציב לחלוטין
+// מנוע המלצות המותאם לאינדקס הכאב החדש (0 עד 3)
 function updateBrainAndUI() {
     const circle = document.getElementById('trafficLightCircle');
     const title = document.getElementById('statusTitle');
@@ -228,41 +224,38 @@ function updateBrainAndUI() {
         return;
     }
 
-    // מיון פנימי זמני לצורך חישוב 3 ההליכות האחרונות כרונולוגית (מהחדש לישן)
-    const chronologicalWalks = [...walks].sort((a, b) => new Date(b.date) - new Date(a.date));
-    const lastThree = chronologicalWalks.slice(0, 3);
-    
+    const lastThree = walks.slice(0, 3);
     let maxPain = 0;
     let highEffortCount = 0;
 
     lastThree.forEach(w => {
         if (w.pain > maxPain) maxPain = w.pain;
-        if (w.effort >= 2) highEffortCount++; // מאמץ קשה או קשה מאוד
+        if (w.effort >= 2) highEffortCount++;
     });
 
     const latestWalk = lastThree[0];
 
-    // לוגיקת קבלת החלטות מתוקנת (סולם 0-3)
-    if (maxPain >= 2 || latestWalk.pain >= 2) {
-        // אדום: כאב מציק (2) או כאב חזק (3) בהליכות האחרונות
+    // לוגיקה לפי סולם 0-3 (0:ללא, 1:קל, 2:מציק, 3:חזק)
+    if (maxPain === 3 || latestWalk.pain >= 2) {
+        // אדום - כאב מציק או חזק
         circle.className = 'status-circle red-status';
         circle.textContent = '⚠';
         title.textContent = 'להפחית עומס / לנוח';
-        desc.textContent = 'נראה שיש עלייה ברמת הכאב בדיווחים האחרונים. מומלץ לקחת יום מנוחה או להפחית משמעותית את זמן ההליכה.';
+        desc.textContent = 'נראה שיש עלייה ברמת הכאב. מומלץ לקחת יום מנוחה או להפחית משמעותית את זמן ההליכה.';
         recommendedMinutesInput.textContent = Math.max(5, Math.round(latestWalk.minutes * 0.7));
     } else if (maxPain === 1 || highEffortCount >= 2) {
-        // צהוב: יש כאב קל (1) או שהיו לפחות שתי הליכות במאמץ גבוה
+        // צהוב - כאב קל או מאמץ גבוה
         circle.className = 'status-circle yellow-status';
         circle.textContent = '●';
         title.textContent = 'להישאר באותו עומס';
-        desc.textContent = 'הגוף מתרגל לעומס הנוכחי וישנו סימן לכאב קל או מאמץ מוגבר. מומלץ להישאר באותו זמן הליכה.';
+        desc.textContent = 'הגוף מתרגל לעומס הנוכחי. מומלץ להישאר באותו זמן הליכה בימים הקרובים.';
         recommendedMinutesInput.textContent = latestWalk.minutes;
     } else {
-        // ירוק: רמת כאב 0 (ללא כאב) ומאמץ תקין לחלוטין בשלוש ההליכות האחרונות
+        // ירוק - ללא כאב ומאמץ תקין
         circle.className = 'status-circle green-status';
         circle.textContent = '✓';
         title.textContent = 'אפשר להמשיך';
-        desc.textContent = 'אין החמרה או כאב בשלוש ההליכות האחרונות. אפשר להמשיך להתקדם בהדרגה.';
+        desc.textContent = 'אין החמרה בשלוש ההליכות האחרונות. אפשר להמשיך להתקדם בהדרגה.';
         recommendedMinutesInput.textContent = latestWalk.minutes + 2;
     }
 }
