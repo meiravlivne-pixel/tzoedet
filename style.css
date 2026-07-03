@@ -1,10 +1,498 @@
-body{font-family:Arial;background:#f4f6f8;max-width:700px;margin:auto;padding:16px}
-.hero{text-align:center}.logo{font-size:48px}.card{background:#fff;border-radius:16px;padding:16px;margin:12px 0}
-button{padding:12px;border:0;border-radius:10px;background:#6f42c1;color:#fff;cursor:pointer}
-.hidden{display:none!important}
-.choice{display:inline-block;padding:10px;margin:4px;border:1px solid #bbb;border-radius:10px;cursor:pointer}
-.selected{background:#dcd0ff}
-.rowItem{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eee}
-.dialog{position:fixed;inset:0;background:#0005;justify-content:center;align-items:center}
-.dialog:not(.hidden){display:flex}
-.dialogBox{background:#fff;padding:20px;border-radius:12px}
+:root {
+    --primary-purple: #70427d;
+    --dark-purple: #5c2d66;
+    --accent-pink: #c94a7f;
+    --bg-light-pink: #fdf5f7;
+    --card-bg: #ffffff;
+    --text-main: #333333;
+    --text-muted: #777777;
+    --status-green: #d4638a; /* מותאם לגוון הוורוד-אדמדם של כפתור הוי במוקאפ */
+}
+
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: var(--bg-light-pink);
+    color: var(--text-main);
+    max-width: 450px;
+    margin: 0 auto;
+    padding: 0;
+    direction: rtl;
+    min-height: 100vh;
+    box-shadow: 0 0 20px rgba(0,0,0,0.05);
+}
+
+.screen {
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* כפתורים ורכיבים כלליים */
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    outline: none;
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: 24px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 16px rgba(112, 66, 125, 0.04);
+    border: 1px solid rgba(112, 66, 125, 0.05);
+}
+
+/* מסך הבית */
+.app-header {
+    text-align: center;
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.logo-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.app-header h1 {
+    color: var(--primary-purple);
+    font-size: 26px;
+    margin: 5px 0;
+    font-weight: 800;
+}
+
+.subtitle {
+    color: var(--primary-purple);
+    font-size: 14px;
+    margin: 0;
+}
+
+.icon-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: transparent;
+    font-size: 20px;
+    color: var(--primary-purple);
+}
+
+/* כרטיס סטטוס רמזור */
+.status-card {
+    text-align: center;
+    background: linear-gradient(to bottom, #fbf2f5, #ffffff);
+}
+
+.status-card h2 {
+    color: var(--primary-purple);
+    font-size: 16px;
+    margin-top: 0;
+}
+
+.status-circle {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    margin: 15px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 32px;
+    font-weight: bold;
+    box-shadow: 0 6px 12px rgba(212, 99, 138, 0.3);
+}
+
+.green-status { background-color: #d4638a; } /* מסמל וי / אישור המשך במוקאפ */
+.yellow-status { background-color: #f39c12; }
+.red-status { background-color: #e74c3c; }
+
+#statusTitle {
+    color: var(--primary-purple);
+    margin: 10px 0 5px 0;
+    font-size: 18px;
+}
+
+#recommendationText {
+    color: #555;
+    font-size: 14px;
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* כרטיס משימה */
+.todo-card h2 {
+    color: var(--primary-purple);
+    font-size: 16px;
+    margin-top: 0;
+    text-align: center;
+}
+
+.todo-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.walk-icon-bg {
+    background-color: #fbf2f5;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: var(--accent-pink);
+}
+
+.activity-type {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.target-minutes {
+    font-size: 22px;
+    font-weight: bold;
+    color: var(--accent-pink);
+    margin: 2px 0;
+}
+
+.sub-target {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.main-btn {
+    background-color: var(--accent-pink);
+    color: white;
+    padding: 16px;
+    border-radius: 30px;
+    font-size: 18px;
+    font-weight: bold;
+    width: 100%;
+    box-shadow: 0 6px 12px rgba(201, 74, 127, 0.2);
+    margin-top: 10px;
+    transition: background 0.2s;
+}
+
+.main-btn:active {
+    background-color: #b03d6d;
+}
+
+.secondary-link-btn {
+    background: transparent;
+    color: var(--primary-purple);
+    text-align: center;
+    margin-top: 15px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+footer {
+    text-align: center;
+    margin-top: auto;
+    padding-top: 30px;
+    font-size: 12px;
+    color: var(--primary-purple);
+    opacity: 0.7;
+}
+
+/* מסכי פנים (יומן וטופס) */
+.screen-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.screen-header h2 {
+    color: var(--primary-purple);
+    font-size: 20px;
+    margin: 0 auto;
+    font-weight: 700;
+}
+
+.back-btn {
+    background: transparent;
+    font-size: 24px;
+    color: var(--primary-purple);
+    position: absolute;
+    right: 0;
+    top: -2px;
+}
+
+/* יומן הליכות */
+.log-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.log-item {
+    background: white;
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.02);
+}
+
+.log-date {
+    font-size: 14px;
+    color: #444;
+    font-weight: 600;
+}
+
+.log-duration {
+    font-size: 15px;
+    color: #222;
+}
+
+.log-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.action-btn {
+    background: transparent;
+    font-size: 18px;
+    padding: 4px;
+}
+
+.log-footer {
+    text-align: center;
+    margin-top: auto;
+    padding-top: 20px;
+    color: var(--primary-purple);
+    font-size: 13px;
+}
+
+/* טופס עריכה והזנה */
+.form-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    background: white;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.02);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.form-group.row-align {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.label {
+    font-weight: 600;
+    color: #444;
+    font-size: 14px;
+}
+
+.date-picker-container input {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 15px;
+    font-family: inherit;
+    color: #333;
+}
+
+/* רכיב בחירת דקות פלוס מינוס */
+.numeric-stepper {
+    display: flex;
+    align-items: center;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.numeric-stepper button {
+    background: #f5f5f5;
+    padding: 8px 14px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #555;
+}
+
+.numeric-stepper input {
+    width: 40px;
+    text-align: center;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--primary-purple);
+    -moz-appearance: textfield;
+}
+
+.numeric-stepper input::-webkit-outer-spin-button,
+.numeric-stepper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* בורר אימוג'י למאמץ */
+.emoji-selector {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.emoji-option {
+    flex: 1;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 10px 5px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    background: #fafafa;
+}
+
+.emoji-option .icon {
+    font-size: 24px;
+}
+
+.emoji-option .text {
+    font-size: 12px;
+    color: #666;
+}
+
+.emoji-option.selected {
+    border-color: var(--accent-pink);
+    background-color: #fff0f5;
+    box-shadow: 0 0 0 1px var(--accent-pink);
+}
+
+/* בורר סקאלת כאב 0-10 */
+.scale-selector {
+    display: flex;
+    justify-content: space-between;
+    overflow-x: auto;
+    padding: 5px 0;
+    gap: 4px;
+}
+
+.scale-num {
+    min-width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #555;
+}
+
+.scale-num.selected {
+    background-color: var(--primary-purple);
+    color: white;
+}
+
+.save-btn {
+    background-color: var(--primary-purple);
+    color: white;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.delete-link-btn {
+    background: transparent;
+    color: #d9534f;
+    text-align: center;
+    font-weight: 600;
+    margin-top: 5px;
+    font-size: 14px;
+}
+
+/* דיאלוג מחיקה */
+.dialog {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(2px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.dialogBox {
+    background: #fff;
+    padding: 24px;
+    border-radius: 24px;
+    width: 100%;
+    max-width: 280px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.delete-icon {
+    font-size: 30px;
+    color: var(--accent-pink);
+    margin-bottom: 10px;
+}
+
+.dialogBox h3 {
+    margin: 0 0 8px 0;
+    color: #222;
+    font-size: 18px;
+}
+
+#deleteDialogDetails {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5;
+    margin: 0 0 20px 0;
+}
+
+.dialog-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-confirm-delete {
+    flex: 1;
+    background-color: var(--accent-pink);
+    color: white;
+    padding: 10px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+.btn-cancel-delete {
+    flex: 1;
+    background-color: #f5f5f5;
+    color: #333;
+    padding: 10px;
+    border-radius: 20px;
+    font-weight: bold;
+}
