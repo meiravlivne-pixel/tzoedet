@@ -1,1 +1,11 @@
-{"name":"צועדת","short_name":"צועדת","start_url":"./","display":"standalone"}
+{
+  "name": "צועדת",
+  "short_name": "צועדת",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#fdf5f7",
+  "theme_color": "#70427d",
+  "orientation": "portrait",
+  "dir": "rtl",
+  "lang": "he"
+}
