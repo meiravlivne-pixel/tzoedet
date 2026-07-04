@@ -8,4 +8,12 @@
   "orientation": "portrait",
   "dir": "rtl",
   "lang": "he"
+    "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
 }
